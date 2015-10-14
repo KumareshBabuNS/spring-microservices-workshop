@@ -5,6 +5,8 @@ import java.util.Date;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
+import org.springframework.boot.actuate.system.EmbeddedServerPortFileWriter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +24,9 @@ import info.novatec.server.person.repository.PersonRepository;
 public class PersonServerLabApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PersonServerLabApplication.class, args);
+    	SpringApplication springApplication = new SpringApplication(PersonServerLabApplication.class);
+    	springApplication.addListeners(new ApplicationPidFileWriter(), new EmbeddedServerPortFileWriter());
+    	springApplication.run(args);
     }
     
     @Bean

@@ -1,10 +1,18 @@
+info:
+  app:
+    name: PersonServer
+    description: Person service
+    version: 1.0.0
+    blbla: 1234544443333
+
 server:
   port: 9999
   
 management:
-  port: 0
+  port: 9997
     
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
