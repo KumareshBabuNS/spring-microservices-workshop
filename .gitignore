@@ -16,3 +16,8 @@ hs_err_pid*
 *.project
 */.settings/
 *.springBeans
+.idea/
+*.iml
+application.pid
+application.port
+application-management.port
