@@ -17,8 +17,7 @@ public class PersonController {
 	
 	@Autowired
 	private PersonManagementService personManagementService;
-	
-	@ResponseBody
+
 	@RequestMapping(value="/findall", method=RequestMethod.GET)
 	public List<Person> retrievePersonen() {
 		return personManagementService.findAll();

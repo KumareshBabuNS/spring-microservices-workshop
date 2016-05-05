@@ -32,8 +32,12 @@ public class PersonServerLabApplication {
     @Bean
     CommandLineRunner runner(PersonRepository rr) {
         return args -> {
-                Arrays.asList(new Person("Hans", "Mustermann", new Date()),new Person("Hubert", "Maier", new Date()))
-                        .forEach(p -> rr.save(p));
+                Arrays.asList(
+                        new Person("Hans", "Mustermann", new Date()),new Person("Steffi", "Graf", new Date()),
+                        new Person("Dieter", "Maier", new Date()),new Person("Peter", "Gedöhns", new Date()),
+                        new Person("Volker", "Müller", new Date()),new Person("Bernd", "Babbel", new Date())
+                        )
+                        .forEach( rr::save );
         };
     }
     

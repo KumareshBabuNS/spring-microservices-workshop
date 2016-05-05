@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpMethod;
@@ -24,14 +25,18 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
 public class PersonClientController {
-	
-	@Autowired
-	DiscoveryClient discoveryClient;
-	
-	@LoadBalanced
-	@Autowired
-	RestTemplate restTemplate;
-	
+
+    private DiscoveryClient discoveryClient;
+
+    private RestTemplate restTemplate;
+
+    @Autowired
+    public PersonClientController ( DiscoveryClient discoveryClient,
+                                    RestTemplate restTemplate ) {
+        this.discoveryClient = discoveryClient;
+        this.restTemplate = restTemplate;
+    }
+
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public String home() {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -47,31 +52,27 @@ public class PersonClientController {
 	}
 	
 	@RequestMapping(value="/personen", method=RequestMethod.GET)
-	@ResponseBody
 	@HystrixCommand(fallbackMethod = "getPersonenFallback")
 	public Collection<Person> personen() {
 		
 		
-		ParameterizedTypeReference<Resources<Person>> ptr =
-                new ParameterizedTypeReference<Resources<Person>>() {
+		ParameterizedTypeReference<Collection<Person>> ptr =
+                new ParameterizedTypeReference<Collection<Person>>() {
                 };
 
-        ResponseEntity<Resources<Person>> responseEntity =
-                this.restTemplate.exchange("http://person-service/persons",
+        ResponseEntity<Collection<Person>> responseEntity =
+                this.restTemplate.exchange("http://person-service/personen/findall",
                         HttpMethod.GET, null, ptr);
 				 
 		 return responseEntity
-				 .getBody()
-				 .getContent()
-				 .stream()	                
-	                .collect(Collectors.toList());
+				 .getBody();
 		
 	}
 	
-	public List<Person> getPersonenFallback() {
+	public Collection<Person> getPersonenFallback() {
 		return new ArrayList<>();
 	}
-	
+
 	public static class Person {
 		private String firstName;
 		private String lastName;
